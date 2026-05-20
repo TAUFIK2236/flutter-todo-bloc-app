@@ -161,6 +161,84 @@ SharedPreferences
 → Todo object
 ```
 
+## API Learning Feature
+
+This project also includes an API Todo screen to practice REST API requests in Flutter.
+
+The API feature uses JSONPlaceholder as a fake REST API for learning and testing.
+
+### API Features
+
+- Fetch todos from an API using GET
+- Create a fake todo using POST
+- Update a todo title using PATCH
+- Delete a todo using DELETE
+- Handle API loading, success, and error states using BLoC
+- Convert JSON response data into Dart model objects
+
+### API Used
+
+```text
+https://jsonplaceholder.typicode.com/todos
+
+API CRUD Flow
+GET    = fetch todos from the server
+POST   = create a new todo
+PATCH  = update an existing todo
+DELETE = delete a todo
+
+API BLoC Flow
+ApiTodoScreen
+→ sends an event
+→ ApiTodoBloc handles the event
+→ TodoApiService makes the HTTP request
+→ API response comes back
+→ JSON is decoded
+→ ApiTodo objects are created
+→ ApiTodoBloc emits a new state
+→ BlocBuilder updates the UI
+
+API States
+ApiTodoLoading = data is loading
+ApiTodoLoaded  = data loaded successfully
+ApiTodoError   = something went wrong
+
+
+API Files
+lib/
+ ├── blocs/
+ │    └── api_todo/
+ │         ├── api_todo_bloc.dart
+ │         ├── api_todo_event.dart
+ │         └── api_todo_state.dart
+ │
+ ├── models/
+ │    └── api_todo.dart
+ │
+ ├── services/
+ │    └── todo_api_service.dart
+ │
+ └── screens/
+      └── api_todo_screen.dart
+
+
+Important Note
+JSONPlaceholder is a fake API. POST, PATCH, and DELETE requests return successful responses, but the data is not permanently saved on the server.
+
+
+Also update **Technologies Used** and add:
+
+```md
+- http
+- REST API
+- JSONPlaceholder
+
+And update What I Learned with:
+- HTTP GET, POST, PATCH, and DELETE requests
+- API service class
+- API BLoC loading, loaded, and error states
+- Using Git branches and pull requests
+
 ## Screens
 
 ### Todo Home Screen
