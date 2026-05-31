@@ -6,8 +6,12 @@ class ApiTodoLoading extends ApiTodoState {}
 
 class ApiTodoLoaded extends ApiTodoState {
   final List<ApiTodo> todos;
+  final bool isCreating;
 
-  ApiTodoLoaded(this.todos);
+  ApiTodoLoaded({
+    required this.todos,
+    this.isCreating = false,
+  });
 }
 
 class ApiTodoError extends ApiTodoState {

@@ -26,26 +26,27 @@
 //     );
 //   }
 // }
-import 'package:flutter/material.dart';
+// import 'package:flutter/material.dart';
+// import 'screens/login_screen.dart';
+// import 'screens/api_todo_screen.dart';
 
-import 'screens/api_todo_screen.dart';
+// void main() {
+//   runApp(const MyApp());
+// }
 
-void main() {
-  runApp(const MyApp());
-}
+// class MyApp extends StatelessWidget {
+//   const MyApp({super.key});
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Todo App',
-      home: ApiTodoScreen(),
-    );
-  }
-}
+//   @override
+//   Widget build(BuildContext context) {
+//     return const MaterialApp(
+//       debugShowCheckedModeBanner: false,
+//       title: 'Todo App',
+//       home: LoginScreen(),
+//      // home: ApiTodoScreen(),
+//     );
+//   }
+// }
 
 
 // import 'package:flutter/material.dart';
@@ -75,3 +76,35 @@ class MyApp extends StatelessWidget {
 
 
 // This screen can change, so we use StatefulWidget.
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import 'blocs/auth/auth_bloc.dart';
+import 'blocs/auth/auth_event.dart';
+import 'repositories/auth_repository.dart';
+import 'screens/auth_wrapper.dart';
+import 'services/auth_service.dart';
+
+void main() {
+  runApp(const MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final authService = AuthService();
+    final authRepository = AuthRepository(authService);
+
+    return BlocProvider(
+      create: (context) =>
+          AuthBloc(authRepository)..add(CheckAuthStatusEvent()),
+      child: const MaterialApp(
+        debugShowCheckedModeBanner: false,
+        title: 'Todo App',
+        home: AuthWrapper(),
+      ),
+    );
+  }
+}

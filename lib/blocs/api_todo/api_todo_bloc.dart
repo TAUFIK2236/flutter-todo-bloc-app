@@ -1,14 +1,15 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:http/http.dart' as http;
+import '../../repositories/api_todo_repository.dart';
 
-import '../../services/todo_api_service.dart';
+//import '../../services/todo_api_service.dart';
 import 'api_todo_event.dart';
 import 'api_todo_state.dart';
 
 class ApiTodoBloc extends Bloc<ApiTodoEvent, ApiTodoState> {
-  final TodoApiService apiService;
+final ApiTodoRepository repository;
 
-  ApiTodoBloc(this.apiService) : super(ApiTodoLoading()) {
+ApiTodoBloc(this.repository) : super(ApiTodoLoading()) {
     on<LoadApiTodosEvent>(_onLoadApiTodos);
     on<CreateApiTodoEvent>(_onCreateApiTodo);
     on<UpdateApiTodoEvent>(_onUpdateApiTodo);
@@ -23,43 +24,53 @@ class ApiTodoBloc extends Bloc<ApiTodoEvent, ApiTodoState> {
     emit(ApiTodoLoading());
 
     try {
-      final todos = await apiService.fetchTodos();
-      emit(ApiTodoLoaded(todos));
+      final todos = await repository.fetchTodos();
+    emit(ApiTodoLoaded(todos: todos));
     } catch (error) {
       emit(ApiTodoError(error.toString()));
     }
   }
 
-  Future<void> _onCreateApiTodo(
-    //---------------for post api---------------
-    CreateApiTodoEvent event,
-    Emitter<ApiTodoState> emit,
-  ) async {
+Future<void> _onCreateApiTodo(
+  CreateApiTodoEvent event,
+  Emitter<ApiTodoState> emit,
+) async {
+  final currentState = state;
+
+  if (currentState is ApiTodoLoaded) {
+    emit(
+      ApiTodoLoaded(
+        todos: currentState.todos,
+        isCreating: true,
+      ),
+    );
+
     try {
-      final createdTodo = await apiService.createTodo(event.title);
+      final createdTodo = await repository.createTodo(event.title);
 
-      final currentState = state;
+      final updatedTodos = [
+        createdTodo,
+        ...currentState.todos,
+      ];
 
-      if (currentState is ApiTodoLoaded) {
-        final updatedTodos = [
-          //-------------to show the todo 1st place in the screen----------
-          createdTodo,
-          ...currentState.todos,
-        ];
-
-        emit(ApiTodoLoaded(updatedTodos));
-      }
+      emit(
+        ApiTodoLoaded(
+          todos: updatedTodos,
+          isCreating: false,
+        ),
+      );
     } catch (error) {
       emit(ApiTodoError(error.toString()));
     }
   }
+}
 
   Future<void> _onUpdateApiTodo(//----------------update the api-------------
     UpdateApiTodoEvent event,
     Emitter<ApiTodoState> emit,
   ) async {
     try {
-      final updatedTodo = await apiService.updateTodoTitle(
+      final updatedTodo = await repository.updateTodoTitle(
         event.id,
         event.newTitle,
       );
@@ -71,7 +82,7 @@ class ApiTodoBloc extends Bloc<ApiTodoEvent, ApiTodoState> {
 
         updatedTodos[event.index] = updatedTodo;
 
-        emit(ApiTodoLoaded(updatedTodos));
+       emit(ApiTodoLoaded(todos: updatedTodos));
       }
     } catch (error) {
       emit(ApiTodoError(error.toString()));
@@ -92,7 +103,7 @@ Future<void> _onDeleteApiTodo(
   Emitter<ApiTodoState> emit,
 ) async {
   try {
-    await apiService.deleteTodo(event.id);
+    await repository.deleteTodo(event.id);
 
     final currentState = state;
 
@@ -101,7 +112,7 @@ Future<void> _onDeleteApiTodo(
 
       updatedTodos.removeAt(event.index);
 
-      emit(ApiTodoLoaded(updatedTodos));
+   emit(ApiTodoLoaded(todos: updatedTodos));
     }
   } catch (error) {
     emit(ApiTodoError(error.toString()));
