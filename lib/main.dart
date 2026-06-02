@@ -78,6 +78,9 @@
 // This screen can change, so we use StatefulWidget.
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
+import 'screens/firebase_auth_screen.dart';
 
 import 'blocs/auth/auth_bloc.dart';
 import 'blocs/auth/auth_event.dart';
@@ -85,7 +88,13 @@ import 'repositories/auth_repository.dart';
 import 'screens/auth_wrapper.dart';
 import 'services/auth_service.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+
   runApp(const MyApp());
 }
 
@@ -103,7 +112,8 @@ class MyApp extends StatelessWidget {
       child: const MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'Todo App',
-        home: AuthWrapper(),
+        home: FirebaseAuthScreen(),
+       // home: AuthWrapper(),
       ),
     );
   }
