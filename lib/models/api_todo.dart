@@ -3,11 +3,7 @@ class ApiTodo {
   final String title;
   final bool completed;
 
-  ApiTodo({
-    required this.id,
-    required this.title,
-    required this.completed,
-  });
+  ApiTodo({required this.id, required this.title, required this.completed});
 
   factory ApiTodo.fromJson(Map<String, dynamic> json) {
     return ApiTodo(

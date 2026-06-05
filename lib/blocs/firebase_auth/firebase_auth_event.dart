@@ -6,20 +6,16 @@ class FirebaseSignUpEvent extends FirebaseAuthEvent {
   final String email;
   final String password;
 
-  FirebaseSignUpEvent({
-    required this.email,
-    required this.password,
-  });
+  FirebaseSignUpEvent({required this.email, required this.password});
 }
 
 class FirebaseLoginEvent extends FirebaseAuthEvent {
   final String email;
   final String password;
 
-  FirebaseLoginEvent({
-    required this.email,
-    required this.password,
-  });
+  FirebaseLoginEvent({required this.email, required this.password});
 }
 
 class FirebaseLogoutEvent extends FirebaseAuthEvent {}
+
+class FirebaseLoadUserProfileEvent extends FirebaseAuthEvent {}

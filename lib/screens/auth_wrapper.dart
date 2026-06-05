@@ -13,9 +13,11 @@ class AuthWrapper extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<AuthBloc, AuthState>(
       builder: (context, state) {
-      if (state is AuthSuccess || state is AuthUserLoaded || state is AuthLoading) {
-  return const ApiTodoScreen();
-}
+        if (state is AuthSuccess ||
+            state is AuthUserLoaded ||
+            state is AuthLoading) {
+          return const ApiTodoScreen();
+        }
 
         return const LoginScreen();
       },

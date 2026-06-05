@@ -4,8 +4,7 @@ import '../../repositories/firebase_auth_repository.dart';
 import 'firebase_auth_event.dart';
 import 'firebase_auth_state.dart';
 
-class FirebaseAuthBloc
-    extends Bloc<FirebaseAuthEvent, FirebaseAuthState> {
+class FirebaseAuthBloc extends Bloc<FirebaseAuthEvent, FirebaseAuthState> {
   final FirebaseAuthRepository repository;
 
   FirebaseAuthBloc(this.repository) : super(FirebaseAuthInitial()) {
@@ -13,8 +12,10 @@ class FirebaseAuthBloc
     on<FirebaseSignUpEvent>(_onSignUp);
     on<FirebaseLoginEvent>(_onLogin);
     on<FirebaseLogoutEvent>(_onLogout);
+    on<FirebaseLoadUserProfileEvent>(_onLoadUserProfile);
   }
 
+  //----------------------------------------------------------------------------------------------------------------------
   void _onCheckAuthStatus(
     FirebaseCheckAuthStatusEvent event,
     Emitter<FirebaseAuthState> emit,
@@ -28,6 +29,7 @@ class FirebaseAuthBloc
     }
   }
 
+  //----------------------------------------------------------------------------------------------------------------------
   Future<void> _onSignUp(
     FirebaseSignUpEvent event,
     Emitter<FirebaseAuthState> emit,
@@ -50,6 +52,7 @@ class FirebaseAuthBloc
     }
   }
 
+  //----------------------------------------------------------------------------------------------------------------------
   Future<void> _onLogin(
     FirebaseLoginEvent event,
     Emitter<FirebaseAuthState> emit,
@@ -72,6 +75,7 @@ class FirebaseAuthBloc
     }
   }
 
+  //----------------------------------------------------------------------------------------------------------------------
   Future<void> _onLogout(
     FirebaseLogoutEvent event,
     Emitter<FirebaseAuthState> emit,
@@ -79,5 +83,23 @@ class FirebaseAuthBloc
     await repository.logout();
 
     emit(FirebaseAuthInitial());
+  }
+
+  //----------------------------------------------------------------------------------------------------------------------
+  Future<void> _onLoadUserProfile(
+    FirebaseLoadUserProfileEvent event,
+    Emitter<FirebaseAuthState> emit,
+  ) async {
+    try {
+      final profileData = await repository.getCurrentUserProfile();
+
+      if (profileData == null) {
+        emit(FirebaseAuthFailure('Profile not found'));
+      } else {
+        emit(FirebaseUserProfileLoaded(profileData));
+      }
+    } catch (error) {
+      emit(FirebaseAuthFailure(error.toString()));
+    }
   }
 }

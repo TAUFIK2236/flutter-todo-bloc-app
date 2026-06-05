@@ -11,13 +11,8 @@ class AuthService {
 
     final response = await http.post(
       url,
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: jsonEncode({
-        'username': username,
-        'password': password,
-      }),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({'username': username, 'password': password}),
     );
 
     if (response.statusCode == 200) {
@@ -29,24 +24,19 @@ class AuthService {
     }
   }
 
+  Future<Map<String, dynamic>> getCurrentUser(String token) async {
+    final url = Uri.parse('https://dummyjson.com/auth/me');
 
-Future<Map<String, dynamic>> getCurrentUser(String token) async {
-  final url = Uri.parse('https://dummyjson.com/auth/me');
+    final response = await http.get(
+      url,
+      headers: {'Authorization': 'Bearer $token'},
+    );
 
-  final response = await http.get(
-    url,
-    headers: {
-      'Authorization': 'Bearer $token',
-    },
-  );
-
-  if (response.statusCode == 200) {
-    final Map<String, dynamic> json = jsonDecode(response.body);
-    return json;
-  } else {
-    throw Exception('Failed to get current user');
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> json = jsonDecode(response.body);
+      return json;
+    } else {
+      throw Exception('Failed to get current user');
+    }
   }
-}
-
-
 }

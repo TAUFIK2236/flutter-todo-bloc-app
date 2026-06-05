@@ -106,50 +106,49 @@ class _ApiTodoScreenState extends State<ApiTodoScreen> {
       },
       child: Builder(
         builder: (context) {
-           return BlocListener<AuthBloc, AuthState>(
-          listener: (context, state) {
-            if (state is AuthUserLoaded) {
-              final firstName = state.userData['firstName'];
-              final lastName = state.userData['lastName'];
+          return BlocListener<AuthBloc, AuthState>(
+            listener: (context, state) {
+              if (state is AuthUserLoaded) {
+                final firstName = state.userData['firstName'];
+                final lastName = state.userData['lastName'];
 
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text('Current user: $firstName $lastName'),
-                  duration: const Duration(seconds: 2),
-                ),
-              );
-            }
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text('Current user: $firstName $lastName'),
+                    duration: const Duration(seconds: 2),
+                  ),
+                );
+              }
 
-            if (state is AuthFailure) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(state.message),
-                  duration: const Duration(seconds: 2),
-                ),
-              );
-            }
-          },
-          child: 
-           Scaffold(
-            appBar: AppBar(
-              title: const Text('API Todos'),
-              centerTitle: true,
-              actions: [
-                IconButton(
-                  icon: const Icon(Icons.person),
-                  onPressed: () {
-                    context.read<AuthBloc>().add(GetCurrentUserEvent());
-                  },
-                ),
-                IconButton(
-                  icon: const Icon(Icons.logout),
-                  onPressed: () {
-                    context.read<AuthBloc>().add(LogoutRequestedEvent());
-                  },
-                ),
-              ],
-            ),
-            body: Column(
+              if (state is AuthFailure) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(state.message),
+                    duration: const Duration(seconds: 2),
+                  ),
+                );
+              }
+            },
+            child: Scaffold(
+              appBar: AppBar(
+                title: const Text('API Todos'),
+                centerTitle: true,
+                actions: [
+                  IconButton(
+                    icon: const Icon(Icons.person),
+                    onPressed: () {
+                      context.read<AuthBloc>().add(GetCurrentUserEvent());
+                    },
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.logout),
+                    onPressed: () {
+                      context.read<AuthBloc>().add(LogoutRequestedEvent());
+                    },
+                  ),
+                ],
+              ),
+              body: Column(
                 children: [
                   BlocBuilder<ApiTodoBloc, ApiTodoState>(
                     builder: (context, state) {

@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-//import 'package:test_app/cubits/todo_cubit.dart';
 
-//import 'package:test_app/models/todo.dart';
 import 'package:test_app/screens/about_screen.dart';
 import 'package:test_app/screens/add_todo_screen.dart';
 import 'package:test_app/screens/edit_todo_screen.dart';
@@ -27,7 +25,7 @@ class _TodoHomePageState extends State<TodoHomePage> {
       context,
       MaterialPageRoute(builder: (context) => const AddTodoScreen()),
     );
-     if (!mounted) return;
+    if (!mounted) return;
     if (result == null) {
       return;
     }
@@ -42,7 +40,7 @@ class _TodoHomePageState extends State<TodoHomePage> {
         builder: (context) => EditTodoScreen(oldTitle: oldTitle),
       ),
     );
-      if (!mounted) return;
+    if (!mounted) return;
     if (result == null) {
       return;
     }
@@ -168,7 +166,7 @@ class _TodoHomePageState extends State<TodoHomePage> {
               //         return const Center(child: CircularProgressIndicator());
               //       }
 
-              //       if (state is TodoLoaded) { 
+              //       if (state is TodoLoaded) {
               //         final todos = state.todos;
 
               //         return todos.isEmpty
@@ -208,45 +206,43 @@ class _TodoHomePageState extends State<TodoHomePage> {
               //     },
               //   ),
               // ),
-SizedBox(
-  height: 200,
-  child: BlocBuilder<TodoBloc, TodoState>(
-    builder: (context, state) {
-      final todos = (state as TodoLoaded).todos;
+              SizedBox(
+                height: 200,
+                child: BlocBuilder<TodoBloc, TodoState>(
+                  builder: (context, state) {
+                    final todos = (state as TodoLoaded).todos;
 
-      return todos.isEmpty
-          ? const Center(
-              child: Text(
-                'No todos yet.\nAdd your first task!',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 16,
-                  color: Colors.grey,
+                    return todos.isEmpty
+                        ? const Center(
+                            child: Text(
+                              'No todos yet.\nAdd your first task!',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontSize: 16,
+                                color: Colors.grey,
+                              ),
+                            ),
+                          )
+                        : ListView.builder(
+                            itemCount: todos.length,
+                            itemBuilder: (context, index) {
+                              return TodoTile(
+                                todo: todos[index],
+                                onChanged: (value) {
+                                  toggleTodo(index, value);
+                                },
+                                onEdit: () {
+                                  openEditTodoScreen(index, todos[index].title);
+                                },
+                                onDelete: () {
+                                  deleteTodo(index);
+                                },
+                              );
+                            },
+                          );
+                  },
                 ),
               ),
-            )
-          : ListView.builder(
-              itemCount: todos.length,
-              itemBuilder: (context, index) {
-                return TodoTile(
-                  todo: todos[index],
-                  onChanged: (value) {
-                    toggleTodo(index, value);
-                  },
-                  onEdit: () {
-                    openEditTodoScreen(index, todos[index].title);
-                  },
-                  onDelete: () {
-                    deleteTodo(index);
-                  },
-                );
-              },
-            );
-    },
-  ),
-),
-
-              
             ],
           ),
         ),

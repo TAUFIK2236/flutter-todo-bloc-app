@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:test_app/screens/firestore_todo_screen.dart';
 
 import '../blocs/firebase_auth/firebase_auth_bloc.dart';
 import '../blocs/firebase_auth/firebase_auth_event.dart';
 import '../blocs/firebase_auth/firebase_auth_state.dart';
 import '../repositories/firebase_auth_repository.dart';
 import '../services/firebase_auth_service.dart';
+import '../services/firestore_service.dart';
 
 class FirebaseAuthScreen extends StatefulWidget {
   const FirebaseAuthScreen({super.key});
@@ -61,8 +63,13 @@ class _FirebaseAuthScreenState extends State<FirebaseAuthScreen> {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) {
-        final service = FirebaseAuthService();
-        final repository = FirebaseAuthRepository(service);
+        final authService = FirebaseAuthService();
+        final firestoreService = FirestoreService();
+
+        final repository = FirebaseAuthRepository(
+          firebaseAuthService: authService,
+          firestoreService: firestoreService,
+        );
 
         return FirebaseAuthBloc(repository)
           ..add(FirebaseCheckAuthStatusEvent());
@@ -82,6 +89,17 @@ class _FirebaseAuthScreenState extends State<FirebaseAuthScreen> {
                   );
                 }
 
+                if (state is FirebaseUserProfileLoaded) {
+                  final email = state.profileData['email'];
+
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('Profile loaded: $email'),
+                      duration: const Duration(seconds: 2),
+                    ),
+                  );
+                }
+
                 if (state is FirebaseAuthFailure) {
                   ScaffoldMessenger.of(
                     context,
@@ -91,7 +109,8 @@ class _FirebaseAuthScreenState extends State<FirebaseAuthScreen> {
               builder: (context, state) {
                 final bool isLoading = state is FirebaseAuthLoading;
 
-                if (state is FirebaseAuthSuccess) {
+                if (state is FirebaseAuthSuccess ||
+                    state is FirebaseUserProfileLoaded) {
                   return Center(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -104,8 +123,38 @@ class _FirebaseAuthScreenState extends State<FirebaseAuthScreen> {
                           ),
                         ),
                         const SizedBox(height: 12),
-                        Text('Email: ${state.user.email}'),
+
+                        if (state is FirebaseAuthSuccess)
+                          Text('Email: ${state.user.email}'),
+
+                        if (state is FirebaseUserProfileLoaded)
+                          Text('Email: ${state.profileData['email']}'),
+
                         const SizedBox(height: 20),
+
+                        ElevatedButton(
+                          onPressed: () {
+                            context.read<FirebaseAuthBloc>().add(
+                              FirebaseLoadUserProfileEvent(),
+                            );
+                          },
+                          child: const Text('Load Profile'),
+                        ),
+                        const SizedBox(height: 12),
+                        ElevatedButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    const FirestoreTodoScreen(),
+                              ),
+                            );
+                          },
+                          child: const Text('Go to Firestore Todos'),
+                        ),
+                        const SizedBox(height: 12),
+
                         ElevatedButton(
                           onPressed: () {
                             context.read<FirebaseAuthBloc>().add(
