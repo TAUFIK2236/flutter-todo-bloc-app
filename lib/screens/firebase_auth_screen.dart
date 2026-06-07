@@ -112,127 +112,189 @@ class _FirebaseAuthScreenState extends State<FirebaseAuthScreen> {
                 if (state is FirebaseAuthSuccess ||
                     state is FirebaseUserProfileLoaded) {
                   return Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Text(
-                          'Firebase Login Successful',
-                          style: TextStyle(
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold,
+                    child: Padding(
+                      padding: const EdgeInsets.all(20),
+                      child: Card(
+                        elevation: 0,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(24),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(24),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const Icon(
+                                Icons.verified_user_outlined,
+                                size: 56,
+                              ),
+
+                              const SizedBox(height: 16),
+
+                              const Text(
+                                'Firebase Login Successful',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+
+                              const SizedBox(height: 12),
+
+                              if (state is FirebaseAuthSuccess)
+                                Text('Email: ${state.user.email}'),
+
+                              if (state is FirebaseUserProfileLoaded)
+                                Text('Email: ${state.profileData['email']}'),
+
+                              const SizedBox(height: 24),
+
+                              SizedBox(
+                                width: double.infinity,
+                                child: ElevatedButton(
+                                  onPressed: () {
+                                    context.read<FirebaseAuthBloc>().add(
+                                      FirebaseLoadUserProfileEvent(),
+                                    );
+                                  },
+                                  child: const Text('Load Profile'),
+                                ),
+                              ),
+
+                              const SizedBox(height: 12),
+
+                              SizedBox(
+                                width: double.infinity,
+                                child: ElevatedButton(
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            const FirestoreTodoScreen(),
+                                      ),
+                                    );
+                                  },
+                                  child: const Text('Go to Firestore Todos'),
+                                ),
+                              ),
+
+                              const SizedBox(height: 12),
+
+                              SizedBox(
+                                width: double.infinity,
+                                child: OutlinedButton(
+                                  onPressed: () {
+                                    context.read<FirebaseAuthBloc>().add(
+                                      FirebaseLogoutEvent(),
+                                    );
+                                  },
+                                  child: const Text('Logout'),
+                                ),
+                              ),
+                            ],
                           ),
                         ),
-                        const SizedBox(height: 12),
-
-                        if (state is FirebaseAuthSuccess)
-                          Text('Email: ${state.user.email}'),
-
-                        if (state is FirebaseUserProfileLoaded)
-                          Text('Email: ${state.profileData['email']}'),
-
-                        const SizedBox(height: 20),
-
-                        ElevatedButton(
-                          onPressed: () {
-                            context.read<FirebaseAuthBloc>().add(
-                              FirebaseLoadUserProfileEvent(),
-                            );
-                          },
-                          child: const Text('Load Profile'),
-                        ),
-                        const SizedBox(height: 12),
-                        ElevatedButton(
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) =>
-                                    const FirestoreTodoScreen(),
-                              ),
-                            );
-                          },
-                          child: const Text('Go to Firestore Todos'),
-                        ),
-                        const SizedBox(height: 12),
-
-                        ElevatedButton(
-                          onPressed: () {
-                            context.read<FirebaseAuthBloc>().add(
-                              FirebaseLogoutEvent(),
-                            );
-                          },
-                          child: const Text('Logout'),
-                        ),
-                      ],
+                      ),
                     ),
                   );
                 }
 
-                return Padding(
-                  padding: const EdgeInsets.all(20),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Text(
-                        'Firebase Auth Practice',
-                        style: TextStyle(
-                          fontSize: 28,
-                          fontWeight: FontWeight.bold,
+                return Center(
+                  child: SingleChildScrollView(
+                    padding: const EdgeInsets.all(20),
+                    child: Card(
+                      elevation: 0,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(24),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(24),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const Icon(Icons.lock_outline, size: 56),
+
+                            const SizedBox(height: 16),
+
+                            const Text(
+                              'Welcome Back',
+                              style: TextStyle(
+                                fontSize: 28,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+
+                            const SizedBox(height: 8),
+
+                            const Text(
+                              'Sign up or log in to manage your cloud todos.',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(fontSize: 15),
+                            ),
+
+                            const SizedBox(height: 28),
+
+                            TextField(
+                              controller: emailController,
+                              keyboardType: TextInputType.emailAddress,
+                              decoration: const InputDecoration(
+                                labelText: 'Email',
+                                prefixIcon: Icon(Icons.email_outlined),
+                              ),
+                            ),
+
+                            const SizedBox(height: 16),
+
+                            TextField(
+                              controller: passwordController,
+                              obscureText: true,
+                              decoration: const InputDecoration(
+                                labelText: 'Password',
+                                prefixIcon: Icon(Icons.lock_outline),
+                              ),
+                            ),
+
+                            const SizedBox(height: 24),
+
+                            SizedBox(
+                              width: double.infinity,
+                              child: ElevatedButton(
+                                onPressed: isLoading
+                                    ? null
+                                    : () {
+                                        signUp(context);
+                                      },
+                                child: isLoading
+                                    ? const SizedBox(
+                                        height: 20,
+                                        width: 20,
+                                        child: CircularProgressIndicator(
+                                          strokeWidth: 2,
+                                        ),
+                                      )
+                                    : const Text('Sign Up'),
+                              ),
+                            ),
+
+                            const SizedBox(height: 12),
+
+                            SizedBox(
+                              width: double.infinity,
+                              child: OutlinedButton(
+                                onPressed: isLoading
+                                    ? null
+                                    : () {
+                                        login(context);
+                                      },
+                                child: const Text('Login'),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
-
-                      const SizedBox(height: 24),
-
-                      TextField(
-                        controller: emailController,
-                        keyboardType: TextInputType.emailAddress,
-                        decoration: const InputDecoration(
-                          labelText: 'Email',
-                          border: OutlineInputBorder(),
-                        ),
-                      ),
-
-                      const SizedBox(height: 16),
-
-                      TextField(
-                        controller: passwordController,
-                        obscureText: true,
-                        decoration: const InputDecoration(
-                          labelText: 'Password',
-                          border: OutlineInputBorder(),
-                        ),
-                      ),
-
-                      const SizedBox(height: 24),
-
-                      SizedBox(
-                        width: double.infinity,
-                        child: ElevatedButton(
-                          onPressed: isLoading
-                              ? null
-                              : () {
-                                  signUp(context);
-                                },
-                          child: isLoading
-                              ? const CircularProgressIndicator()
-                              : const Text('Sign Up'),
-                        ),
-                      ),
-
-                      const SizedBox(height: 12),
-
-                      SizedBox(
-                        width: double.infinity,
-                        child: OutlinedButton(
-                          onPressed: isLoading
-                              ? null
-                              : () {
-                                  login(context);
-                                },
-                          child: const Text('Login'),
-                        ),
-                      ),
-                    ],
+                    ),
                   ),
                 );
               },

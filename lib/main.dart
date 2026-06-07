@@ -17,10 +17,33 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Todo App',
-      home: FirebaseAuthScreen(),
-    );
+return MaterialApp(
+  debugShowCheckedModeBanner: false,
+  title: 'Todo App',
+  theme: ThemeData(
+    useMaterial3: true,
+    colorSchemeSeed: Colors.deepPurple,
+    scaffoldBackgroundColor: const Color(0xFFF8F6FF),
+    appBarTheme: const AppBarTheme(
+      centerTitle: true,
+      elevation: 0,
+      backgroundColor: Color(0xFFF8F6FF),
+    ),
+    inputDecorationTheme: InputDecorationTheme(
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(14),
+      ),
+    ),
+    elevatedButtonTheme: ElevatedButtonThemeData(
+      style: ElevatedButton.styleFrom(
+        padding: const EdgeInsets.symmetric(vertical: 14),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(14),
+        ),
+      ),
+    ),
+  ),
+  home: const FirebaseAuthScreen(),
+);
   }
 }

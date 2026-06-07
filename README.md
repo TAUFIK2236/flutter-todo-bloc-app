@@ -825,3 +825,14 @@ Through this project, I practiced:
 - Add Firebase Storage for profile pictures
 - Add more secure production Firestore rules
 - Build a polished portfolio version of this app
+
+## Screenshots
+
+### Login Screen
+![Login Screen](assets/screenshots/1.png)
+
+### Firebase Auth Success
+![Firebase Auth Success](assets/screenshots/2.png)
+
+### Cloud Todos
+![Cloud Todos](assets/screenshots/3.png)

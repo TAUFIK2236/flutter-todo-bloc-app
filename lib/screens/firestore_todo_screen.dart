@@ -119,33 +119,52 @@ class _FirestoreTodoScreenState extends State<FirestoreTodoScreen> {
       child: Builder(
         builder: (context) {
           return Scaffold(
-            appBar: AppBar(
-              title: const Text('Firestore Todos'),
-              centerTitle: true,
-            ),
+            appBar: AppBar(title: const Text('Cloud Todos'), centerTitle: true),
             body: Column(
               children: [
+                const Padding(
+                  padding: EdgeInsets.fromLTRB(20, 8, 20, 0),
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      'Your cloud-synced tasks',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
                 Padding(
-                  padding: const EdgeInsets.all(12),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: TextField(
-                          controller: controller,
-                          decoration: const InputDecoration(
-                            hintText: 'Enter Firestore todo',
-                            border: OutlineInputBorder(),
+                  padding: const EdgeInsets.all(16),
+                  child: Card(
+                    elevation: 0,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(12),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: TextField(
+                              controller: controller,
+                              decoration: const InputDecoration(
+                                hintText: 'Add a new cloud todo',
+                                prefixIcon: Icon(Icons.add_task),
+                              ),
+                            ),
                           ),
-                        ),
+                          const SizedBox(width: 8),
+                          ElevatedButton(
+                            onPressed: () {
+                              addTodo(context);
+                            },
+                            child: const Text('Add'),
+                          ),
+                        ],
                       ),
-                      const SizedBox(width: 8),
-                      ElevatedButton(
-                        onPressed: () {
-                          addTodo(context);
-                        },
-                        child: const Text('Add'),
-                      ),
-                    ],
+                    ),
                   ),
                 ),
 
@@ -165,7 +184,25 @@ class _FirestoreTodoScreenState extends State<FirestoreTodoScreen> {
 
                         if (todos.isEmpty) {
                           return const Center(
-                            child: Text('No Firestore todos yet'),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(Icons.cloud_done_outlined, size: 64),
+                                SizedBox(height: 12),
+                                Text(
+                                  'No cloud todos yet',
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                SizedBox(height: 6),
+                                Text(
+                                  'Add your first todo above.',
+                                  style: TextStyle(fontSize: 14),
+                                ),
+                              ],
+                            ),
                           );
                         }
 
@@ -174,54 +211,71 @@ class _FirestoreTodoScreenState extends State<FirestoreTodoScreen> {
                           itemBuilder: (context, index) {
                             final todo = todos[index];
 
-                            return Card(
-                              child: ListTile(
-                                leading: Checkbox(
-                                  value: todo.isDone,
-                                  onChanged: (value) {
-                                    context.read<FirestoreTodoBloc>().add(
-                                      ToggleFirestoreTodoEvent(
-                                        userId: currentUser!.uid,
-                                        todoId: todo.id,
-                                        isDone: value ?? false,
-                                      ),
-                                    );
-                                  },
+                            return Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 16,
+                                vertical: 6,
+                              ),
+                              child: Card(
+                                elevation: 0,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(18),
                                 ),
-                                title: Text(
-                                  todo.title,
-                                  style: TextStyle(
-                                    decoration: todo.isDone
-                                        ? TextDecoration.lineThrough
-                                        : TextDecoration.none,
-                                  ),
-                                ),
-                                trailing: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    IconButton(
-                                      icon: const Icon(Icons.edit),
-                                      onPressed: () {
-                                        showEditDialog(
-                                          context: context,
+                                child: ListTile(
+                                  leading: Checkbox(
+                                    value: todo.isDone,
+                                    onChanged: (value) {
+                                      context.read<FirestoreTodoBloc>().add(
+                                        ToggleFirestoreTodoEvent(
                                           userId: currentUser!.uid,
                                           todoId: todo.id,
-                                          oldTitle: todo.title,
-                                        );
-                                      },
+                                          isDone: value ?? false,
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                  title: Text(
+                                    todo.title,
+
+                                    style: TextStyle(
+                                      color: todo.isDone ? Colors.grey : null,
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w500,
+                                      decoration: todo.isDone
+                                          ? TextDecoration.lineThrough
+                                          : TextDecoration.none,
                                     ),
-                                    IconButton(
-                                      icon: const Icon(Icons.delete),
-                                      onPressed: () {
-                                        context.read<FirestoreTodoBloc>().add(
-                                          DeleteFirestoreTodoEvent(
+                                  ),
+                                  trailing: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      IconButton(
+                                        icon: const Icon(Icons.edit_outlined),
+                                        onPressed: () {
+                                          showEditDialog(
+                                            context: context,
                                             userId: currentUser!.uid,
                                             todoId: todo.id,
-                                          ),
-                                        );
-                                      },
-                                    ),
-                                  ],
+                                            oldTitle: todo.title,
+                                          );
+                                        },
+                                      ),
+                                      IconButton(
+                                        icon: const Icon(
+                                          Icons.delete_outline,
+                                          color: Colors.redAccent,
+                                        ),
+                                        onPressed: () {
+                                          context.read<FirestoreTodoBloc>().add(
+                                            DeleteFirestoreTodoEvent(
+                                              userId: currentUser!.uid,
+                                              todoId: todo.id,
+                                            ),
+                                          );
+                                        },
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
                             );
