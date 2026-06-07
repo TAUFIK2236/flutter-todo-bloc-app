@@ -835,7 +835,7 @@ Through this project, I practiced:
 </p>
 
 <p align="center">
-  <b>Login Screen</b> &nbsp;&nbsp;&nbsp;
-  <b>Firebase Auth Success</b> &nbsp;&nbsp;&nbsp;
+  <b>Login Screen</b> &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+  <b>Firebase Auth Success</b> &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
   <b>Cloud Todos</b>
 </p>
