@@ -828,11 +828,14 @@ Through this project, I practiced:
 
 ## Screenshots
 
-### Login Screen
-![Login Screen](assets/screenshots/1.png)
+<p align="center">
+  <img src="assets/screenshots/1.png" width="250" alt="Login Screen" />
+  <img src="assets/screenshots/2.png" width="250" alt="Firebase Auth Success" />
+  <img src="assets/screenshots/3.png" width="250" alt="Cloud Todos" />
+</p>
 
-### Firebase Auth Success
-![Firebase Auth Success](assets/screenshots/2.png)
-
-### Cloud Todos
-![Cloud Todos](assets/screenshots/3.png)
+<p align="center">
+  <b>Login Screen</b> &nbsp;&nbsp;&nbsp;
+  <b>Firebase Auth Success</b> &nbsp;&nbsp;&nbsp;
+  <b>Cloud Todos</b>
+</p>
